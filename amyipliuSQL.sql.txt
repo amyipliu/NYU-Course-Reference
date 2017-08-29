@@ -1,0 +1,146 @@
+#1.1
+ SELECT id,extra
+    -> FROM SLEEP;
+
+#1.2
+ SELECT extra,id
+    -> FROM SLEEP;
+
+#1.3
+ SELECT category
+    -> FROM SLEEP
+    -> GROUP BY category;
+#1.4
+SELECT id, extra
+    -> FROM SLEEP
+    -> WHERE extra >0;
+
+#1.5
+SELECT category,SUM(category) as extraSum, COUNT(category) as categoryNum
+    -> FROM SLEEP
+    -> GROUP BY category;
+
+#1.6
+SELECT category, AVG(extra) as mean_extra
+    -> FROM SLEEP
+    -> GROUP BY category;
+
+#2.1
+SELECT * FROM Department LIMINT 0,2;
+
+#2.2
+SELECT employeename, hiredate, basewage
+    -> FROM Employee;
+
+# 2.3
+SELECT employeename, basewage*wagelevel as Total_wage
+FROM Employee
+GROUP BY employeename;
+
+#2.4
+ SELECT employeename, basewage
+    -> FROM Employee
+    -> WHERE basewage >=2000 and basewage <=3000
+    -> ORDER BY basewage DESC;
+
+#2.5
+SELECT employeename, hiredate, basewage
+    -> FROM Employee
+    -> WHERE employeename LIKE '%8' AND hiredate > '20100610';
+
+#2.6
+SELECT employeename, e.departmentid, e.basewage*e.wagelevel as total_wage
+    -> FROM Employee e JOIN Department d ON e.departmentid
+    ->  WHERE e.basewage * e.wagelevel > 7000;
+
+#2.7
+SELECT e.departmentid
+    -> FROM Employee e JOIN Department d ON e.departmentid
+    -> WHERE ( SELECT count(e.employeename) from Employee e JOIN Department d ON e.departmentid WHERE basewage >= 3000) >= 2
+    -> GROUP BY e.departmentid;
+
+#2.8
+SELECT d.departmentname, AVG(e.basewage * e.wagelevel) AS averagewage
+    -> FROM Employee e JOIN Department d ON e.departmentid
+    -> GROUP BY d.departmentname
+    -> ORDER BY AVG(e.basewage * e.wagelevel) ASC;
+
+#2.9
+SELECT d.departmentid, e.EmployeeSex, AVG(e.basewage * e.wagelevel) AS averagewage
+    -> FROM Employee e JOIN Department d ON e.departmentid
+    -> GROUP BY e.EmployeeSex, d.departmentid
+    -> ORDER BY d.departmentid DESC;
+
+#2. 10
+SELECT e.employeename, d.departmentname, principal
+    -> FROM Employee e JOIN Department d ON e.departmentid;
+
+#3.1
+  CREATE TABLE adult (age int,
+    ->                     workclass char(60),
+    ->                     fnlwgt int,
+    ->                     education char(30),
+    ->                     education_num int,
+    ->                     marital_status char(20),
+    ->                     occupation char(30),
+    ->                     relationship char(30),
+    ->                     race char(20),
+    ->                     sex char (7),
+    ->                     capital_gain int,
+    ->                     capital_loss int,
+    ->                     hours_per_week int,
+    ->                     native_country char(50),
+    ->                     class char(10));
+Query OK, 0 rows affected (0.07 sec)
+
+#3.2
+LOAD DATA LOCAL INFILE 'adult.data'
+    -> INTO TABLE adult
+    -> FIELDS TERMINATED BY ', '
+    -> LINES TERMINATED BY '\n';
+
+#3.3
+a.
+SELECT * FROM adult 
+WHERE Age is null OR fnlwgt is null OR EducationNum is null OR CapitalGain is null OR CapitalLoss is null OR HoursperWeek is null;
+
+b.
+SELECT * FROM adult 
+WHERE Workclass = '?' OR Education = '?' OR MaritalStatus = '?' OR Occupation = '?' OR Relationship = '?' OR Race = '?' OR Sex = '?' OR NativeCountry = '?' OR Class = '?';
+
+
+#3.4.
+DELETE FROM adult WHERE 
+    age IS NULL OR workclass = "?" OR fnlwqt IS NULL OR education = "?" 
+    OR education_num IS NULL OR marital_status = "?" OR occupation = "?" 
+    OR relationship = "?" OR race = "?" OR sex = "?" OR capital_gain IS 
+    NULL OR capital_loss IS NULL OR hours_per_week IS NULL OR 
+    native_country = "?" OR class = "?";  
+
+#3.5.
+SELECT (SELECT COUNT(*) FROM adult WHERE class = "<=50K") /
+    (SELECT COUNT(*) FROM adult WHERE class = ">50K") AS ratio;
+
+
+#3.6.
+SELECT Class, AVG(Age) FROM adult GROUP BY Class;
+
+
+#3.7.
+SELECT Class, COUNT(*) 
+FROM adult 
+WHERE class =  '>50K' AND age < 36.78
+GROUP BY Class;
+
+
+#3.8.
+SELECT Class, AVG(HoursperWeek) AS AvgHoursperWeek
+FROM adult
+GROUP BY Class;
+
+
+--9.
+SELECT Class, Sex, COUNT(*)
+FROM adult
+GROUP BY Sex, Class;                
+
